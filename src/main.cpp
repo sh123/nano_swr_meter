@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <timer.h>
+#include <arduino-timer.h>
 #include <math.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -58,34 +58,6 @@ double vswr;
 
 auto timer = timer_create_default();
 
-void setup() {
-  Serial.begin(9600);
-
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
-  {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
-  }
-  
-  display.clearDisplay();
-  display.setTextSize(2);      // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE); // Draw white text
-  display.setCursor(8, 8);     // Start at top-left corner
-  display.print(F("SWR meter"));
-  display.display();
-  delay(1000);
-  
-  display.clearDisplay();
-  display.display();
-
-  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-    fwdReadings[thisReading] = 0;
-    rflReadings[thisReading] = 0;
-  }
-
-  timer.every(screenUpdateMs, updateScreen);
-}
-
 double toWatts(int val)
 {
   int v, v_prev;
@@ -112,36 +84,7 @@ double toWatts(int val)
   return 0.0;
 }
 
-void loop() 
-{
-  int fwdVal = analogRead(fwdPin);
-  int rflVal = analogRead(rflPin);
-
-  fwdTotal = fwdTotal - fwdReadings[readIndex];
-  fwdReadings[readIndex] = fwdVal;
-  fwdTotal = fwdTotal + fwdReadings[readIndex];
-
-  rflTotal = rflTotal - rflReadings[readIndex];
-  rflReadings[readIndex] = rflVal;
-  rflTotal = rflTotal + rflReadings[readIndex];
-  
-  readIndex = readIndex + 1;
-  
-  if (readIndex >= numReadings) {
-    readIndex = 0;
-  }
-  
-  fwdAverage = fwdTotal / numReadings;
-  rflAverage = rflTotal / numReadings;
-  
-  gamma = (double)rflVal / (double)fwdVal;
-  vswr = (1 + abs(gamma)) / (1 - abs(gamma));
-
-  timer.tick();
-  delay(50);
-}
-
-bool updateScreen() 
+bool updateScreen(void *) 
 {
   double fwdWatts = toWatts(fwdAverage);
   double rflWatts = toWatts(rflAverage);
@@ -201,3 +144,62 @@ bool updateScreen()
 
   return true;
 }
+
+void setup() 
+{
+  Serial.begin(9600);
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+  
+  display.clearDisplay();
+  display.setTextSize(2);      // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE); // Draw white text
+  display.setCursor(8, 8);     // Start at top-left corner
+  display.print(F("SWR meter"));
+  display.display();
+  delay(1000);
+  
+  display.clearDisplay();
+  display.display();
+
+  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    fwdReadings[thisReading] = 0;
+    rflReadings[thisReading] = 0;
+  }
+
+  timer.every(screenUpdateMs, updateScreen);
+}
+
+void loop() 
+{
+  int fwdVal = analogRead(fwdPin);
+  int rflVal = analogRead(rflPin);
+
+  fwdTotal = fwdTotal - fwdReadings[readIndex];
+  fwdReadings[readIndex] = fwdVal;
+  fwdTotal = fwdTotal + fwdReadings[readIndex];
+
+  rflTotal = rflTotal - rflReadings[readIndex];
+  rflReadings[readIndex] = rflVal;
+  rflTotal = rflTotal + rflReadings[readIndex];
+  
+  readIndex = readIndex + 1;
+  
+  if (readIndex >= numReadings) {
+    readIndex = 0;
+  }
+  
+  fwdAverage = fwdTotal / numReadings;
+  rflAverage = rflTotal / numReadings;
+  
+  gamma = (double)rflVal / (double)fwdVal;
+  vswr = (1 + abs(gamma)) / (1 - abs(gamma));
+
+  timer.tick();
+  delay(50);
+}
+
