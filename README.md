@@ -11,3 +11,5 @@ Two mix 52? toroids from junk box are used.
 
 ![alt text](extras/images/cores.jpg)
 
+Needs re-calibration if re-built with other SWR meter by adjusting `correctionTable` values in the sketch.
+
