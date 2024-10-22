@@ -7,7 +7,7 @@ Metal box from junk is used as a case with SSD1306 display and two PL connectors
 
 ![alt text](extras/images/meter.jpg)
 
-Two mix 52? toroids from junk box are used.
+Two mix 43/52? toroids from junk box are used.
 
 ![alt text](extras/images/cores.jpg)
 
