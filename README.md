@@ -11,5 +11,5 @@ Two mix 43/52? toroids from junk box are used.
 
 ![alt text](extras/images/cores.jpg)
 
-Needs re-calibration if re-built with other SWR meter by adjusting `correctionTable` values in the sketch.
+Needs re-calibration if re-built with another SWR bridge by adjusting `correctionTable` values in the sketch.
 
