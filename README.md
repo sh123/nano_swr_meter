@@ -6,3 +6,6 @@ Arduino Nano based portable SWR/POWER meter, which can measure SWR and POWER on 
 Metal box from junk is used as a case with SSD1306 display and two PL connectors, powered from 9V battery.
 
 ![alt text](extras/images/meter.jpg)
+
+![alt text](extras/images/cores.jpg)
+
